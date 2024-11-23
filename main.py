@@ -1,10 +1,12 @@
 import random
 import tkinter as tk
+from sound_manager import SoundManager
 
 class TenziesGame:
     def __init__(self, root):
         self.root = root
         self.root.title("Tenzies Dice Game")
+        self.sound_manager = SoundManager()
         
         self.dice = [random.randint(1, 6) for _ in range(10)]  # Initial dice roll
         self.held = [False] * 10  # Track held dice
@@ -12,6 +14,7 @@ class TenziesGame:
         self.max_rolls = 10
         self.best_score = None
         self.rolling = False  # Prevent multiple clicks during animation
+        self.game_started = False  # Prevent interaction until the first roll
 
         self.create_widgets()
     
@@ -32,11 +35,18 @@ class TenziesGame:
         self.roll_button = tk.Button(self.root, text="Roll", font=("Arial", 18), command=self.roll_dice)
         self.roll_button.pack(pady=20)
 
+        # Reset Button
+        self.reset_button = tk.Button(self.root, text="Reset", font=("Arial", 18), command=self.reset_game)
+        self.reset_button.pack(pady=10)
+
         # Status label
         self.status_label = tk.Label(self.root, text="Roll the dice to start!", font=("Arial", 16))
         self.status_label.pack(pady=10)
     
     def toggle_hold(self, index):
+        if not self.game_started:  # Prevent holding until the game starts
+            self.status_label.config(text="Please roll the dice to start!")
+            return
         if self.rolling:  # Prevent holding during animation
             return
         self.held[index] = not self.held[index]
@@ -46,15 +56,21 @@ class TenziesGame:
         if self.rolling:  # Prevent multiple rolls during animation
             return
         if self.roll_count >= self.max_rolls:
+            self.sound_manager.play_sound("lose") 
             self.status_label.config(text="Game over! Reset to play again.")
+            self.roll_button.pack_forget() 
             return
         
         if len(set(self.dice)) == 1:  # Check if all dice are the same
+            self.sound_manager.play_sound("win") 
             self.status_label.config(text="You already won! Reset to play again.")
+            self.roll_button.pack_forget() 
             return
 
         # Start rolling animation
+        self.sound_manager.play_sound("roll") 
         self.rolling = True
+        self.game_started = True  # Allow interaction after the first roll
         self.animate_rolls(0)  # Start animation sequence
     
     def animate_rolls(self, step):
@@ -75,6 +91,10 @@ class TenziesGame:
             self.roll_count += 1
             self.update_dice_display()
             self.check_game_status()
+
+            if self.roll_count >= self.max_rolls or len(set(self.dice)) == 1:
+                self.roll_button.pack_forget()
+
             self.rolling = False  # End animation
     
     def check_game_status(self):
@@ -84,8 +104,10 @@ class TenziesGame:
                 self.best_score = self.roll_count
                 win_message += f" New best score: {self.best_score} rolls!"
             self.status_label.config(text=win_message)
+            self.sound_manager.play_sound("win")
         elif self.roll_count >= self.max_rolls:  # Game over condition
             self.status_label.config(text="Game over! No more rolls left.")
+            self.sound_manager.play_sound("lose")
         else:
             self.status_label.config(text=f"Rolls: {self.roll_count} / {self.max_rolls}")
 
@@ -107,17 +129,18 @@ class TenziesGame:
         self.dice = [random.randint(1, 6) for _ in range(10)]
         self.held = [False] * 10
         self.roll_count = 0
+        self.game_started = False  # Prevent interaction after reset
         self.status_label.config(text="Roll the dice to start!")
         self.update_dice_display()
+
+        self.roll_button.pack_forget()
+        self.reset_button.pack_forget()
+        self.roll_button.pack(pady=20)
+        self.reset_button.pack(pady=10)
 
 def main():
     root = tk.Tk()
     game = TenziesGame(root)
-
-    # Reset Button
-    reset_button = tk.Button(root, text="Reset", font=("Arial", 18), command=game.reset_game)
-    reset_button.pack(pady=10)
-
     root.mainloop()
 
 main()
