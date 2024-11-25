@@ -2,6 +2,7 @@ import random
 import tkinter as tk
 from sound_manager import SoundManager
 from dice_image_manager import DiceImageManager  
+import pygame  
 
 class TenziesGame:
     def __init__(self, root):
@@ -140,9 +141,24 @@ class TenziesGame:
 
 
 def main():
+    pygame.init()
     root = tk.Tk()
     game = TenziesGame(root)
+
+      # Event handling for music restoring
+    def handle_pygame_events():
+        for event in pygame.event.get():
+            if event.type == pygame.USEREVENT:
+                game.sound_manager.handle_music_restore()
+
+    #  Call the event handler periodically
+    def check_events():
+        handle_pygame_events()
+        root.after(100, check_events)
+
+    check_events()  # Start checking events
     root.mainloop()
 
+    pygame.quit()
 
 main()
