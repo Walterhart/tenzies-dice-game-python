@@ -79,3 +79,24 @@ Run the game:
 ```bash
 python main.py
 ```
+
+
+## Assets
+
+The following assets were used in this project. Proper credit is given to the original authors:
+
+1. **Win Sound Effect**  
+   Source: [Win Sound Effect](https://opengameart.org/content/win-sound-effect)  
+   Author: **Little Robot Sound Factory**
+
+2. **Music Box - Game Over III**  
+   Source: [Music Box - Game Over III](https://opengameart.org/content/music-box-game-over-iii)  
+   Author: **Joth**
+
+3. **Simple Dice 2**  
+   Source: [Simple Dice 2](https://opengameart.org/content/simple-dice-2)  
+   Author: **Lamoot**
+
+4. **Tavern Music**  
+   Source: [Tavern Music](https://pixabay.com/music/folk-medieval-citytavern-ambient-235876/)  
+   Author: **Pixabay Contributors**
