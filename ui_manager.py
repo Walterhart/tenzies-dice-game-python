@@ -44,9 +44,6 @@ class UIManager:
         self.root.rowconfigure(2, weight=1)  # Buttons
         self.root.rowconfigure(3, weight=1)  # Status/Instructions
 
-        style = ttk.Style()
-        style.configure("Tenzies.TButton", font=("Comic Sans MS", 16), padding=10)
-
         # Title Label
         title_label = tk.Label(
             self.root,
@@ -77,13 +74,31 @@ class UIManager:
         # Buttons (Roll and Reset)
         button_frame = tk.Frame(self.root, bg="#282c34")
         button_frame.grid(row=2, column=0, pady=20)
-        self.roll_button = ttk.Button(
-            button_frame, text="🎲 Roll", command=self.roll_dice_callback, style="Tenzies.TButton"
+
+        self.roll_button = tk.Button(
+            button_frame,
+            text="🎲 Roll",
+            command=lambda: self.handle_button_press(
+                self.roll_button, self.roll_dice_callback, temp_color="lightgreen"
+            ),
+            font=("Comic Sans MS", 16),
+            bg="#61dafb",
+            activebackground="#21a1f1",
+            relief="raised",
         )
         self.roll_button.grid(row=0, column=0, padx=10)
 
-        self.reset_button = ttk.Button(
-            button_frame, text=" ♻️ Reset", command=self.reset_game_callback, style="Tenzies.TButton"
+        self.reset_button = tk.Button(
+            button_frame,
+            text="♻️ Reset",
+            command=lambda: self.handle_button_press(
+                self.reset_button, self.reset_game_callback, temp_color="lightgreen"
+            ),
+            font=("Comic Sans MS", 16),
+            bg="#61dafb",
+            activebackground="#21a1f1",
+            relief="raised",
+            style="RoundedButton.TButton"
         )
         self.reset_button.grid(row=0, column=1, padx=10)
 
@@ -96,6 +111,20 @@ class UIManager:
             fg="#ffffff",
         )
         self.status_label.grid(row=3, column=0, pady=10, sticky="n")
+
+    def handle_button_press(self, button, callback, temp_color="#61dafb"):
+        """
+       Temporarily changes the button's color and invokes the specified callback.
+
+        Args:
+            button (tk.Button): The button being pressed.
+            callback (function): The callback function to invoke.
+            temp_color (str): The temporary color for the button.
+        """
+        original_color = button.cget("bg")
+        button.config(bg=temp_color)
+        self.root.after(200, lambda: button.config(bg=original_color))
+        callback()
 
 
     def update_dice_display(self, dice, held):
