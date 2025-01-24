@@ -44,6 +44,9 @@ class UIManager:
         self.root.rowconfigure(2, weight=1)  # Buttons
         self.root.rowconfigure(3, weight=1)  # Status/Instructions
 
+        style = ttk.Style()
+        style.configure("Tenzies.TButton", font=("Comic Sans MS", 16), padding=10)
+
         # Title Label
         title_label = tk.Label(
             self.root,
@@ -74,10 +77,14 @@ class UIManager:
         # Buttons (Roll and Reset)
         button_frame = tk.Frame(self.root, bg="#282c34")
         button_frame.grid(row=2, column=0, pady=20)
-        self.roll_button = ttk.Button(button_frame, text="🎲 Roll", command=self.roll_dice_callback)
+        self.roll_button = ttk.Button(
+            button_frame, text="🎲 Roll", command=self.roll_dice_callback, style="Tenzies.TButton"
+        )
         self.roll_button.grid(row=0, column=0, padx=10)
 
-        self.reset_button = ttk.Button(button_frame, text="🔄 Reset", command=self.reset_game_callback)
+        self.reset_button = ttk.Button(
+            button_frame, text=" ♻️ Reset", command=self.reset_game_callback, style="Tenzies.TButton"
+        )
         self.reset_button.grid(row=0, column=1, padx=10)
 
         # Status label (Instructions)
@@ -89,6 +96,7 @@ class UIManager:
             fg="#ffffff",
         )
         self.status_label.grid(row=3, column=0, pady=10, sticky="n")
+
 
     def update_dice_display(self, dice, held):
         """
